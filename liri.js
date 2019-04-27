@@ -33,7 +33,15 @@ var findSpotify = function(search) {
       return console.log("Error: " + err);
     };
     console.log(data);
-  })
+  });
+};
+
+//function to search omdb api
+var findMovie = function(search) {
+  axios.get("http://www.omdbapi.com/?t=" + search + "&y=&plot=full&tomatoes=true&apikey=trilogy")
+    .then(function(response){
+      console.log(response.data);
+    });
 };
 
 switch (command) {
@@ -50,6 +58,7 @@ switch (command) {
   case "movie-this":
     //run ombd api
     console.log('omdb');
+    findMovie(searchTerm);
     break;
   case "do-what-it-says":
     //run command for random.txt
