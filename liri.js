@@ -14,6 +14,9 @@ var spotify = new Spotify(keys.spotify);
 //load fs
 var fs = require("fs");
 
+//load moment
+var moment = require("moment");
+
 //store liri command
 var command = process.argv[2];
 
@@ -26,6 +29,17 @@ var findConcerts = function (search) {
   axios.get("https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp")
     .then(function (response) {
       console.log(response.data);
+      if (!response.data[0]) {
+        console.log("No concerts found!");
+      }
+      else {
+        for (let i = 0; i < response.data.length; i++) {
+          console.log("--------------------");
+          console.log(response.data[i].venue.name);
+          console.log(response.data[i].venue.city + ", " + (response.data[i].venue.region || response.data[i].venue.country));
+          console.log(moment(response.data[i].datetime).format("MM/DD/YYYY"));
+        };
+      };
     });
 };
 
@@ -35,7 +49,9 @@ var findSpotify = function (search) {
     if (err) {
       return console.log("Error: " + err);
     };
-    console.log(data);
+    console.log("Artist: " + data.tracks.items[0].artists[0].name);
+    console.log("Song: " + data.tracks.items[0].name);
+    console.log("Preview: " + data.tracks.items[0].preview_url);
   });
 };
 
@@ -65,22 +81,18 @@ function searchCall(command, searchTerm) {
   switch (command) {
     case "concert-this":
       //run bands in town api
-      console.log('bands');
       findConcerts(searchTerm);
       break;
     case "spotify-this-song":
       //run spotify api
-      console.log('spotify');
       findSpotify(searchTerm);
       break;
     case "movie-this":
       //run ombd api
-      console.log('omdb');
       findMovie(searchTerm);
       break;
     case "do-what-it-says":
       //run command for random.txt
-      console.log('random');
       random();
       break;
     default:
@@ -88,8 +100,7 @@ function searchCall(command, searchTerm) {
   };
 };
 
-console.log(searchTerm);
-
+//main function call
 searchCall(command, searchTerm);
 
 
