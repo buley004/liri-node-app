@@ -29,6 +29,10 @@ var findConcerts = function (search) {
   axios.get("https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp")
     .then(function (response) {
       console.log(response.data);
+      if (response.data == "Not found"){
+        console.log("yoooooo");
+        
+      }
       if (!response.data[0]) {
         console.log("No concerts found!");
       }
@@ -45,18 +49,28 @@ var findConcerts = function (search) {
 
 //function to search spotify api
 var findSpotify = function (search) {
+  //if no search term, search for the sign by ace of base
+  if(search == ""){
+    search = "The Sign Ace of Base";
+  }
   spotify.search({ type: "track", query: search }, function (err, data) {
+    
     if (err) {
       return console.log("Error: " + err);
     };
-    console.log("Artist: " + data.tracks.items[0].artists[0].name);
-    console.log("Song: " + data.tracks.items[0].name);
-    console.log("Preview: " + data.tracks.items[0].preview_url);
+      console.log("Artist: " + data.tracks.items[0].artists[0].name);
+      console.log("Song: " + data.tracks.items[0].name);
+      console.log("Preview: " + data.tracks.items[0].preview_url);
   });
 };
 
 //function to search omdb api
 var findMovie = function (search) {
+  //if search term is blank, search for mr. nobody
+  if(search == ""){
+    search = "Mr. Nobody";
+  }
+  
   axios.get("http://www.omdbapi.com/?t=" + search + "&y=&plot=full&tomatoes=true&apikey=trilogy")
     .then(function (response) {
       console.log("Title: " + response.data.Title);
