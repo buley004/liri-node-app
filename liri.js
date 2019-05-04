@@ -25,17 +25,23 @@ var searchTerm = process.argv.slice(3).join(" ");
 
 //function to search bands in town api
 var findConcerts = function (search) {
+  if(search == ""){
+    console.log("Please enter an artist");
+    return false;
+  }
   //use axios to call bands in town api
   axios.get("https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp")
     .then(function (response) {
-      console.log(response.data);
-      if (response.data == "Not found"){
-        console.log("yoooooo");
-        
+      //check if artist is found
+      if(response.data.indexOf("warn=Not found") >=0){
+        console.log("No artist found");
+        return false;
       }
+      //check if artist has concerts
       if (!response.data[0]) {
         console.log("No concerts found!");
       }
+      //display concerts
       else {
         for (let i = 0; i < response.data.length; i++) {
           console.log("--------------------");
@@ -73,6 +79,12 @@ var findMovie = function (search) {
   
   axios.get("http://www.omdbapi.com/?t=" + search + "&y=&plot=full&tomatoes=true&apikey=trilogy")
     .then(function (response) {
+      //give error if movie not found
+      if(response.data.Error){
+        console.log(response.data.Error);
+        return false;
+      }
+      //display movie info
       console.log("Title: " + response.data.Title);
       console.log("Year: " + response.data.Year);
       console.log("IMDB Rating: " + response.data.imdbRating);
@@ -87,7 +99,6 @@ var findMovie = function (search) {
 //function to search from txt file
 var random = function () {
   fs.readFile("random.txt", "utf8", function (err, data) {
-    console.log(data);
     
     //parse data into command and search term
     textInputs = data.split(",");
